@@ -1,6 +1,10 @@
 console.log("connected!");
+
 var body = document.querySelector("body");
 var input_num;
+var access_key = "b1d5f828832403389f1e161a42f63498";
+var get_string;
+var api_return;
 
 //create title
 document.querySelector("title").innerText = " Project 3";
@@ -21,6 +25,8 @@ var verify = function(){
     } else if( input_num.value.toString().includes("e")){
         console.log("input should not contain e");
     }
+    get_string = 'http://apilayer.net/api/validate?access_key=' + access_key 
+        + '&number=' + input_num.value;
 }
 
 var button = document.createElement("button");
@@ -34,3 +40,42 @@ window.addEventListener("keyup", function(e) {
         verify();
     }
 })
+
+
+
+
+var promise1 = new Promise(function(resolve, reject) {
+    //do a thing async
+        var httpRequest;
+        function makeRequest(){
+            httpRequest = new XMLHttpRequest();
+
+            if(!httpRequest) {
+                    alert("cannot create an XMLHTTP instance");
+            }
+            httpRequest.onreadstatechange = alertContents;
+            httpRequest.open('GET', get_string );
+            httpRequest.send();
+        }
+
+        function alertContents() {
+            if(httpRequest.readyState == XMLHttpRequest.DONE){
+                if(httpRequest.status === 200) {
+                    alert(httpRequest.responseText);
+                } else {
+                    alert("there was a problem with the request");
+                }
+            }
+        }
+    //if everything turned out fine
+    if(httpRequest!=false){
+        api_return = httpRequest;
+        resolve("stuff worked!");
+
+    } else {
+        reject(Error("It broke!"));
+       
+    }
+});
+
+var promise2 = promise1.then(console.log(api_return));
